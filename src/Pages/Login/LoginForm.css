@@ -5,16 +5,17 @@
     justify-content: center;
     align-items: center;
     overflow: auto;
-    background: rgb(203,233,235);
-    background: radial-gradient(circle, rgba(203,233,235,1) 0%, rgba(244,243,243,1) 26%, rgba(241,250,238,1) 100%);
+    background: rgb(44, 51, 51);
+    color: white;
+    /* background: radial-gradient(circle, rgba(203,233,235,1) 0%, rgba(244,243,243,1) 26%, rgba(241,250,238,1) 100%); */
 }
-
 .card-container {
     width: 500px;
     margin: 0px 10px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(98, 149, 132, 0.3);
+
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -22,9 +23,13 @@
 
 .card-container form {
     padding: 20px 5px;
-    color: rgb(0, 0, 0);
+    color: white;
 }
-
+form img{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
 .card-container form label {
     font-size: 16px;
 }
@@ -34,13 +39,18 @@
 }
 .submit-btn button{
     width: 80%;
-    background-color: white;
-    color: black;
-    box-shadow: 0px 0px 50px rgb(53, 141, 147) inset;
+    color: white;
+    background-color: rgb(56, 116, 120); 
+
     border: none;
     outline: none;
     padding: 6px 8px;
     font-size: 19px
+}
+.submit-btn button:hover{
+    background-color: rgb(56, 116, 120); 
+
+
 }
 .alert{
     position: absolute;
@@ -50,4 +60,11 @@
     width: 400px;
     max-width: 100%;
     margin: 0px 10px;
+}
+.showerr{
+    text-align: center;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 4px;
+    z-index: 1000;
 }

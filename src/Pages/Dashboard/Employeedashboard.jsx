@@ -23,7 +23,8 @@ const Employeedashboard = () => {
   const [callingusercontact, setCallingUserContact] = useState([]);
   const [updatetime, setUpdateTime] = useState('')
   const [managequeue, setManageQueue] = useState('');
-  const [showcard , setShowCard] = useState(true);
+  const [showcard, setShowCard] = useState(true);
+  const [notificationmsg, setNotificationmsg] = useState('');
 
   const navigate = useNavigate();
   const cardRef = useRef(null); // Ref for the user details card
@@ -56,10 +57,9 @@ const Employeedashboard = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (cardRef.current && !cardRef.current.contains(event.target)) {
-        setSelectedUser(null); // Close the card if clicked outside
+        setSelectedUser(null);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -82,7 +82,7 @@ const Employeedashboard = () => {
     if (tableSize && roomtype) {
       fetchQueue();
     }
-  }, [tableSize, roomtype]); 
+  }, [tableSize, roomtype]);
 
   const fetchQueue = () => {
     stopfunction();
@@ -91,6 +91,8 @@ const Employeedashboard = () => {
     setEventSource(eventSource);
     eventSource.onmessage = (event) => {
       const newMessage = JSON.parse(event.data);
+      console.log(newMessage);
+      setNotificationmsg(newMessage.Notification.Message);
       if (!newMessage.Status) {
         eventSource.close();
       }
@@ -150,7 +152,7 @@ const Employeedashboard = () => {
           body: formdata,
         });
         const data = await response.json();
-        if(data.Status === true){
+        if (data.Status === true) {
           setShowCard(false);
         }
         if (data.Authentication === false) {
@@ -166,13 +168,12 @@ const Employeedashboard = () => {
   }
 
   const updatealoteuser = (abc, row) => {
-
     const fetchData = async () => {
       try {
         const formdata = new FormData();
         formdata.append('token', token);
         formdata.append('username', user);
-        formdata.append('contact',  row );
+        formdata.append('contact', row);
 
         const response = await fetch(`http://192.168.1.25/Queue/Hotel_Employee/queueManage.php?waiting=${abc}`, {
           method: 'POST',
@@ -219,13 +220,24 @@ const Employeedashboard = () => {
     }
     fetchData();
   }
-
   return (
     <div>
       <Layout>
         <div className="employee-dashoboard">
+
           <div className="employee">
-            <div className="row mt-2">
+            {
+              notificationmsg && (
+                <>
+                  <div className="alert alert-warning alert-dismissible fade show notify" role="alert">
+                   {notificationmsg}
+                    <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                </>
+              )
+            }
+
+            <div className="row mt-5">
               <div className="col-md-6 text-center">
                 <div className="rooms" style={{ fontSize: '20px' }}><strong>Rooms</strong></div>
                 <div className="input-container text-start">
@@ -264,33 +276,29 @@ const Employeedashboard = () => {
             </div>
 
             {/* Calling Users */}
-           
-                <div className="waiting-user text-center mt-3">
-                <span style={{ fontSize: '20px' }}><strong>Calling Users</strong></span>
-                <div className="callinguser-container d-flex justify-content-center flex-column">
-                  {callingData.length > 0 ? (
-                    callingData.map((row) => (
-                      <div className="user-card" key={row.srno} style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', width: '96%', border: '1px solid #ccc', borderRadius: '5px', padding: '10px', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' }}>
-                        <div className="user-card-header" style={{ marginBottom: '10px' }}>
-                          <h5 style={{ margin: '5px 0px', fontSize: '23px' }}>Calling...</h5>
-                          <h6 style={{ margin: '5px 0px', fontSize: '20px' }}><strong>UserName:</strong> {row.callingUser}</h6>
-                          <p style={{ margin: 0, fontSize: '20px' }}><strong>Contact:</strong> {row.callingContact}</p>
-                          <hr />
-                          <div className="updatedata-container ">
-                            <button className='queuefetchbtn' style={{ margin: '0px 4px' }} onClick={() => updatealoteuser('aloting' ,row.callingContact)}>Alote</button>
-                            <button className='queuefetchbtn' style={{ margin: '0px 4px' }} onClick={() => updatealoteuser('deleting' ,row.callingContact)}>Delete</button>
-                            <button className='queuefetchbtn' style={{ margin: '0px 4px' }} onClick={() => updatealoteuser('waiting' ,row.callingContact)}>Back To Queue</button>
-                          </div>
+
+            <div className="waiting-user text-center mt-3">
+              <span style={{ fontSize: '25px' }}><strong>Calling Users</strong></span>
+              <div className="callinguser-container d-flex justify-content-center flex-column mt-3">
+                {callingData.length > 0 ? (
+                  callingData.map((row) => (
+                    <div className="user-card" key={row.srno} style={{ marginBottom: '10px', cursor: 'pointer', display: 'flex', flexDirection: 'column', width: '96%', border: '1px solid #ccc', borderRadius: '5px', padding: '10px', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)' }}>
+                      <div className="user-card-header" style={{ marginBottom: '10px' }}>
+                        <h5 style={{ margin: '5px 0px', fontSize: '23px' }}>Calling...</h5>
+                        <h6 style={{ margin: '5px 0px', fontSize: '20px' }}><strong>UserName:</strong> {row.callingUser}</h6>
+                        <p style={{ margin: 0, fontSize: '20px' }}><strong>Contact:</strong> {row.callingContact}</p>
+                        <hr />
+                        <div className="updatedata-container ">
+                          <button className='queuefetchbtn' style={{ margin: '0px 4px' }} onClick={() => updatealoteuser('aloting', row.callingContact)}>Alote</button>
+                          <button className='queuefetchbtn' style={{ margin: '0px 4px' }} onClick={() => updatealoteuser('deleting', row.callingContact)}>Delete</button>
+                          <button className='queuefetchbtn' style={{ margin: '0px 4px' }} onClick={() => updatealoteuser('waiting', row.callingContact)}>Back To Queue</button>
                         </div>
                       </div>
-
-                    ))
-                  ) : <span>There Are No Data In Calling</span>}
-                </div>
+                    </div>
+                  ))
+                ) : <span>There Are No Data In Calling</span>}
               </div>
-            
-          
-
+            </div>
 
             {/* Waiting Users */}
             <div className="waiting-user text-center mt-3">
@@ -309,17 +317,20 @@ const Employeedashboard = () => {
                     {tableData.length > 0 ? (
                       tableData.map((row) => (
                         <tr key={row.srno} onClick={() => handleRowClick(row)} style={{ cursor: 'pointer', position: 'relative' }}>
-                          <td><span style={{ position: 'absolute', top: '10px', left: '10px' }} onClick={(e) => {
-                            e.stopPropagation();
-                            updatealoteuser('calling' , row.waitingContact); 
-                          }}><i class="fa-solid fa-arrow-up"></i></span>{row.srno}</td>
+                          <td>{row.srno}</td>
                           <td>{row.waitingUser}</td>
                           {/* <td>{row.waitingContact}</td> */}
                           <td>{row.waitingtime}</td>
-                          <td><span className='data-bs-toggle="modal" data-bs-target="#exampleModal"' onClick={(e) => {
-                            e.stopPropagation();
-                            updatealoteuser('delete' , row.waitingContact); 
-                          }}><i className="fa-solid fa-trash text-danger"></i></span></td>
+                          <td>
+                            <span style={{ paddingRight: '20px'}} onClick={(e) => {
+                              e.stopPropagation();
+                              updatealoteuser('calling', row.waitingContact);
+                            }}><i className="fa-solid fa-arrow-up"></i></span>
+
+                            <span className='data-bs-toggle="modal" data-bs-target="#exampleModal"' onClick={(e) => {
+                              e.stopPropagation();
+                              updatealoteuser('delete', row.waitingContact);
+                            }}><i className="fa-solid fa-trash text-danger"></i></span></td>
                         </tr>
                       ))
                     ) : (
@@ -333,8 +344,8 @@ const Employeedashboard = () => {
             </div>
 
             {/* User Details Card */}
-            {selectedUser &&(
-              <div className="user-details-card text-center" ref={cardRef} style={{display: !showcard ? 'none' : 'block'}}>
+            {selectedUser && (
+              <div className="user-details-card text-center" ref={cardRef} style={{ display: !showcard ? 'none' : 'block' }}>
                 <form>
                   <h3>User Details</h3>
                   <div className='mb-2 fs-5'>Queue-No: {selectedUser.srno}</div>
@@ -370,7 +381,7 @@ const Employeedashboard = () => {
                     <span className='queuefetchbtn col-4' style={{ margin: '0px 5px', }} onClick={submitusertime}>Submit</span>
                   </div>
                   <hr></hr>
-                  <div class="input-group row mb-3">
+                  <div className="input-group row mb-3">
                     <label htmlFor="waiting-time" className="col-5 col-form-label text-start">Manage Queue:</label>
                     <select name="manage-queue" className='col-2 selecttable' style={{ width: '60px' }} value={managequeue} onChange={handlequeueupdate}>
                       {
@@ -405,8 +416,8 @@ const Employeedashboard = () => {
             )}
           </div>
         </div>
-      </Layout>
-    </div>
+      </Layout >
+    </div >
   );
 };
 

@@ -9,9 +9,10 @@
     display: flex;
     justify-content: center;
     margin-top: 60px;
-    background: rgb(0, 0, 0);
+    background: rgb(44, 51, 51);
+    color: white;
     padding: 5px 0px;
-    background: radial-gradient(circle, rgba(203,233,235,1) 0%, rgba(244,243,243,1) 26%, rgba(241,250,238,1) 100%);
+    /* background: radial-gradient(circle, rgba(203,233,235,1) 0%, rgba(244,243,243,1) 26%, rgba(241,250,238,1) 100%); */
 }
 .employee{
     width: 100%;
@@ -19,8 +20,11 @@
     /* height: 90vh; */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(50px);
-    background: rgba(94, 212, 214, 0.1);
+    background: rgba(98, 149, 132, 0.3);
     overflow: auto;
+    margin: 10px;
+    border-radius: 4px;
+    position: relative;
 }
 .input-container{
     display: flex;
@@ -95,6 +99,7 @@
 }
 .table-container table{
     width: 100%;
+    color: black;
 }
 .table-container table, tr, td{
     padding: 10px;
@@ -105,7 +110,9 @@
 .table-container tr:nth-child(odd) {
     background-color: #aed3d0; 
 }
-
+.table-container tr:nth-child(even) {
+  background-color: #ffffff; 
+}
 .user-details-card {
     position: fixed;
     top: 50%;
@@ -120,12 +127,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    color: black;
   }
   .user-details-card button{
     position: absolute;
     right: 8px;
     top: 8px;
   }
+  .notify{
+   border: 1px solid;
+   padding: 8px;
+   position: absolute;
+   top: 25px;
+   font-size: 12px;
+   width: 90%;
+  }
+
+  
   .user-card {
     cursor: pointer;
     display: flex;
@@ -135,6 +153,7 @@
     border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 5px;
     margin: 0px auto;
+    color: black;
   }
   
   .user-card:hover {
