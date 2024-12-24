@@ -1,6 +1,7 @@
 import React from 'react'
 import './Navbar.css';
 import { useSelector } from 'react-redux';
+import zeal from '../../assets/Zeal_Logo_2.png'
 
 const Navbar = () => {
    const isloggedin = useSelector((state) => state.token.userloggedin);
@@ -10,15 +11,10 @@ const Navbar = () => {
             <header>
                 <div className="navbar">
                     <div className="leftnavbar">
-                       <a href="" className='ml-4'>Company Name</a>
+                       <a href="" className='ml-4'>Banana-Leaf</a>
                     </div>
                     <div className="rightnavbar">
-                       {/* <i class="fa-solid fa-bell"></i> */}
-                       {
-                        isloggedin && (
-                            <i className="fa-solid fa-user"></i>
-                        )
-                       }
+                           <img src={zeal} alt="" style={{width:'35px', height:'35px'}} />
                     </div>
                 </div>
             </header>

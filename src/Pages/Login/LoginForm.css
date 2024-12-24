@@ -5,17 +5,20 @@
     justify-content: center;
     align-items: center;
     overflow: auto;
-    background: rgb(44, 51, 51);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../assets/fbg.gif');
+    background-repeat: no-repeat;
+    background-position: cover;
+    background-size: cover;
     color: white;
     /* background: radial-gradient(circle, rgba(203,233,235,1) 0%, rgba(244,243,243,1) 26%, rgba(241,250,238,1) 100%); */
 }
+
 .card-container {
     width: 500px;
     margin: 0px 10px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     background: rgba(98, 149, 132, 0.3);
-
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -25,43 +28,50 @@
     padding: 20px 5px;
     color: white;
 }
-form img{
+
+form img {
     width: 60px;
     height: 60px;
     border-radius: 50%;
 }
+
 .card-container form label {
     font-size: 16px;
 }
-.submit-btn{
+
+.submit-btn {
     width: 100%;
     text-align: center;
 }
-.submit-btn button{
+
+.submit-btn button {
     width: 80%;
     color: white;
-    background-color: rgb(56, 116, 120); 
+    background-color: rgb(56, 116, 120);
 
     border: none;
     outline: none;
     padding: 6px 8px;
     font-size: 19px
 }
-.submit-btn button:hover{
-    background-color: rgb(56, 116, 120); 
+
+.submit-btn button:hover {
+    background-color: rgb(56, 116, 120);
 
 
 }
-.alert{
+
+.alert {
     position: absolute;
     top: 20%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     width: 400px;
     max-width: 100%;
     margin: 0px 10px;
 }
-.showerr{
+
+.showerr {
     text-align: center;
     padding: 10px;
     font-size: 20px;

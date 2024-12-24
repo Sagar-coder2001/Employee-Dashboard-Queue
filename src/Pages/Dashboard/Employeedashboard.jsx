@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import './Employeedashboard.css';
 import Layout from '../../Cpmponents/Layout';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const Employeedashboard = () => {
   const location = useLocation();
@@ -27,7 +28,11 @@ const Employeedashboard = () => {
   const [notificationmsg, setNotificationmsg] = useState('');
 
   const navigate = useNavigate();
-  const cardRef = useRef(null); // Ref for the user details card
+  const cardRef = useRef(null);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,6 +101,11 @@ const Employeedashboard = () => {
       if (!newMessage.Status) {
         eventSource.close();
       }
+
+      if (newMessage.Notification.Message) {
+        toast(newMessage.Notification.Message);
+      }
+
       if (newMessage.Authentication === false) {
         navigate('/');
       }
@@ -212,6 +222,9 @@ const Employeedashboard = () => {
         if (data.Authentication === false) {
           navigate('/');
         }
+        if (data.Status === true) {
+          setShowCard(false);
+        }
         console.log(data)
 
       } catch (err) {
@@ -220,26 +233,60 @@ const Employeedashboard = () => {
     }
     fetchData();
   }
+
+
+  // Get current page data
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const totalPages = Math.ceil(tableData.length / itemsPerPage);
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+    paginate(page);
+  };
+
+  const handlePreviousClick = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      paginate(currentPage - 1);
+    }
+  };
+
+  const handleNextClick = () => {
+    if (currentPage < itemsPerPage) {
+      setCurrentPage(currentPage + 1);
+      paginate(currentPage + 1);
+    }
+  };
+
   return (
     <div>
       <Layout>
         <div className="employee-dashoboard">
-
+       
           <div className="employee">
             {
-              notificationmsg && (
-                <>
-                  <div className="alert alert-warning alert-dismissible fade show notify" role="alert">
-                   {notificationmsg}
-                    <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                  </div>
-                </>
+          (
+                <ToastContainer
+                position="top-right"
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={true}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
               )
             }
-
-            <div className="row mt-5">
+            <div className="row mt-5 container-fluid">
               <div className="col-md-6 text-center">
-                <div className="rooms" style={{ fontSize: '20px' }}><strong>Rooms</strong></div>
+                <div className="rooms" style={{ fontSize: '20px' }}><strong>Rooms :</strong></div>
                 <div className="input-container text-start">
                   <label className="radio-label">
                     <input type="radio" name="room" value="1" className="radio-input" onChange={handleRoomTypeChange} />
@@ -303,6 +350,7 @@ const Employeedashboard = () => {
             {/* Waiting Users */}
             <div className="waiting-user text-center mt-3">
               <div className="table-container">
+                <span style={{ fontSize: '25px' }}><strong>All Waiting Users</strong></span>
                 <table className="custom-table">
                   <thead>
                     <tr style={{ backgroundColor: 'white' }}>
@@ -314,15 +362,15 @@ const Employeedashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {tableData.length > 0 ? (
-                      tableData.map((row) => (
+                    {currentItems.length > 0 ? (
+                      currentItems.map((row) => (
                         <tr key={row.srno} onClick={() => handleRowClick(row)} style={{ cursor: 'pointer', position: 'relative' }}>
                           <td>{row.srno}</td>
                           <td>{row.waitingUser}</td>
                           {/* <td>{row.waitingContact}</td> */}
                           <td>{row.waitingtime}</td>
                           <td>
-                            <span style={{ paddingRight: '20px'}} onClick={(e) => {
+                            <span style={{ paddingRight: '20px' }} onClick={(e) => {
                               e.stopPropagation();
                               updatealoteuser('calling', row.waitingContact);
                             }}><i className="fa-solid fa-arrow-up"></i></span>
@@ -343,12 +391,42 @@ const Employeedashboard = () => {
               </div>
             </div>
 
+            {/* pagination  */}
+
+            <nav aria-label="Page navigation example">
+              <ul className="pagination justify-content-center">
+                {/* Previous Button */}
+                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                  <a className="page-link" href="#" onClick={(e) => { e.preventDefault(); handlePreviousClick(); }} tabIndex="-1">Previous</a>
+                </li>
+
+                {/* Page Number Buttons */}
+                {Array.from({ length: currentPage }, (_, index) => (
+                  <li key={index + 1} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+                    <a
+                      className="page-link"
+                      href="#"
+                      onClick={(e) => { e.preventDefault(); handlePageClick(index + 1); }}
+                    >
+                      {index + 1}
+                    </a>
+                  </li>
+                ))}
+
+                {/* Next Button */}
+                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                  <a className="page-link" href="#" onClick={(e) => { e.preventDefault(); handleNextClick(); }}>Next</a>
+                </li>
+              </ul>
+            </nav>
+
+
             {/* User Details Card */}
             {selectedUser && (
               <div className="user-details-card text-center" ref={cardRef} style={{ display: !showcard ? 'none' : 'block' }}>
                 <form>
                   <h3>User Details</h3>
-                  <div className='mb-2 fs-5'>Queue-No: {selectedUser.srno}</div>
+                  <div className='mb-2 fs-5'>Your Queue-No: {selectedUser.srno}</div>
                   <div className="row mb-2">
                     <label htmlFor="username" className="col-4 col-form-label text-start">Username:</label>
                     <div className="col-8">
@@ -382,7 +460,7 @@ const Employeedashboard = () => {
                   </div>
                   <hr></hr>
                   <div className="input-group row mb-3">
-                    <label htmlFor="waiting-time" className="col-5 col-form-label text-start">Manage Queue:</label>
+                    <label htmlFor="waiting-time" className="col-5 col-form-label text-start">Queue manage:</label>
                     <select name="manage-queue" className='col-2 selecttable' style={{ width: '60px' }} value={managequeue} onChange={handlequeueupdate}>
                       {
                         tableData.map((val) => (

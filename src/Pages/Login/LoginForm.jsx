@@ -97,7 +97,7 @@ const LoginForm = () => {
                 <form>
                   <div style={{textAlign:'center'}}>
                   <img src={userimg} alt="" />
-                  <h4 className='text-center fs-2'>Employee Login</h4>
+                  <h4 className='text-center fs-2'>Employee Register</h4>
                   </div>
           
                   <div className="mb-3">
