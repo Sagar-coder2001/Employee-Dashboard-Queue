@@ -3,6 +3,7 @@ import './Employeedashboard.css';
 import Layout from '../../Cpmponents/Layout';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import audio from '../../assets/preview.mp3'
 
 const Employeedashboard = () => {
   const location = useLocation();
@@ -26,6 +27,8 @@ const Employeedashboard = () => {
   const [managequeue, setManageQueue] = useState('');
   const [showcard, setShowCard] = useState(true);
   const [notificationmsg, setNotificationmsg] = useState('');
+  const [notifydata, setNotifyData] = useState([]);
+  const [opennptify, setopenNotify] = useState(false)
 
   const navigate = useNavigate();
   const cardRef = useRef(null);
@@ -101,9 +104,15 @@ const Employeedashboard = () => {
       if (!newMessage.Status) {
         eventSource.close();
       }
+      if (newMessage.Notification.Status == true) {
+        setNotifyData(newMessage.Notification.Notification)
+      }
+
+      const audi = new Audio(audio);
 
       if (newMessage.Notification.Message) {
         toast(newMessage.Notification.Message);
+        audi.play();
       }
 
       if (newMessage.Authentication === false) {
@@ -177,8 +186,11 @@ const Employeedashboard = () => {
     fetchData();
   }
 
+
+
   const updatealoteuser = (abc, row) => {
     const fetchData = async () => {
+
       try {
         const formdata = new FormData();
         formdata.append('token', token);
@@ -200,7 +212,6 @@ const Employeedashboard = () => {
     };
     fetchData();
   }
-
   const handlequeueupdate = (e) => {
     setManageQueue(e.target.value)
   }
@@ -267,21 +278,21 @@ const Employeedashboard = () => {
     <div>
       <Layout>
         <div className="employee-dashoboard">
-       
           <div className="employee">
+            <i class="fa-solid fa-bell" onClick={() => setopenNotify(true)} style={{ marginLeft: '50px', padding: '10px', position: 'fixed', top: '10px', right: '0', zIndex: '5000', fontSize: '20px' }}></i>
             {
-          (
+              (
                 <ToastContainer
-                position="top-right"
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={true}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
+                  position="top-right"
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick={true}
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
               )
             }
             <div className="row mt-5 container-fluid">
@@ -362,6 +373,7 @@ const Employeedashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
+
                     {currentItems.length > 0 ? (
                       currentItems.map((row) => (
                         <tr key={row.srno} onClick={() => handleRowClick(row)} style={{ cursor: 'pointer', position: 'relative' }}>
@@ -369,16 +381,19 @@ const Employeedashboard = () => {
                           <td>{row.waitingUser}</td>
                           {/* <td>{row.waitingContact}</td> */}
                           <td>{row.waitingtime}</td>
-                          <td>
-                            <span style={{ paddingRight: '20px' }} onClick={(e) => {
+
+                          <td className='row'>
+                            <span className='col-6' onClick={(e) => {
                               e.stopPropagation();
                               updatealoteuser('calling', row.waitingContact);
                             }}><i className="fa-solid fa-arrow-up"></i></span>
 
-                            <span className='data-bs-toggle="modal" data-bs-target="#exampleModal"' onClick={(e) => {
+                            <span className='data-bs-toggle="modal" col-6 data-bs-target="#exampleModal"' onClick={(e) => {
                               e.stopPropagation();
                               updatealoteuser('delete', row.waitingContact);
+
                             }}><i className="fa-solid fa-trash text-danger"></i></span></td>
+
                         </tr>
                       ))
                     ) : (
@@ -390,6 +405,65 @@ const Employeedashboard = () => {
                 </table>
               </div>
             </div>
+
+            {/* open notify */}
+
+            {
+              opennptify && (
+                <>
+                  {
+                    opennptify && (
+                      <>
+                        <div className="user-details-card text-center employee" ref={cardRef} style={{ display: !showcard ? 'none' : 'block' }}>
+                          <h3>Notification</h3>
+                          {/* You can map through your data here */}
+                          <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setopenNotify(false)}
+                            style={{
+                              border: 'none',
+                              background: 'none',
+                              fontSize: '1.2rem',
+                              color: 'red',
+                              cursor: 'pointer',
+                              outline: 'none',
+                            }}
+                          >
+                            &#10006;
+                          </button>
+                          <div className="mb-4">
+                            <table className="table table-bordered table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>Table Type</th>
+                                  <th>Table Size</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {notifydata.map((user, index) => (
+                                  <tr key={index}>
+                                    <td>{user.Name}</td> {/* Display Name */}
+                                    <td>{user.Table_Type}</td> {/* Display Table Type */}
+                                    <td>{user.Table_Size}</td> {/* Display Table Size */}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+
+
+                        </div>
+                      </>
+                    )
+                  }
+
+                </>
+              )
+            }
+
+
 
             {/* pagination  */}
 
@@ -423,7 +497,7 @@ const Employeedashboard = () => {
 
             {/* User Details Card */}
             {selectedUser && (
-              <div className="user-details-card text-center" ref={cardRef} style={{ display: !showcard ? 'none' : 'block' }}>
+              <div className="user-details-card text-center employee" ref={cardRef} style={{ display: !showcard ? 'none' : 'block' }}>
                 <form>
                   <h3>User Details</h3>
                   <div className='mb-2 fs-5'>Your Queue-No: {selectedUser.srno}</div>

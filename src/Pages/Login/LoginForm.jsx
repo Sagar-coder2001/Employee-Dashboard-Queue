@@ -34,8 +34,6 @@ const LoginForm = () => {
     setfilepath(file);
   }, [])
 
-
-
   const submitDetails = async (e) => {
     e.preventDefault();
     try {
@@ -73,9 +71,13 @@ const LoginForm = () => {
   useEffect(() => {
     setTimeout(() => {
       setShowErr(false)
-    }, 400000);
+    }, 5000);
   },)
 
+  const togglePass = (id) => {
+    const passwordInput = document.getElementById(id);
+    passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+};
   return (
     <div>
       <Layout>
@@ -99,16 +101,14 @@ const LoginForm = () => {
                   <img src={userimg} alt="" />
                   <h4 className='text-center fs-2'>Employee Register</h4>
                   </div>
-          
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label"> <strong>Username</strong></label>
                     <input type="email" className="form-control" value={userdetails.username} onChange={onchangetext} id="username" name='username' />
-
                   </div>
-                  <div className="mb-3">
+                  <div className="mb-3" style={{position:'relative'}}>
                     <label htmlFor="password" className="form-label"><strong>Password</strong></label>
                     <input type="password" className="form-control" value={userdetails.password} onChange={onchangetext} name='password' id="password" />
-
+                    <i className="fa-solid fa-eye" style={{position: 'absolute', top:'40px', right:'10px', color:'black'}} onClick={() => {togglePass('password')}}></i>
                   </div>
                   <div className="mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="exampleCheck1" />

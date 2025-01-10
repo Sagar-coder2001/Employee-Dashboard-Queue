@@ -11,10 +11,11 @@ const Navbar = () => {
             <header>
                 <div className="navbar">
                     <div className="leftnavbar">
-                       <a href="" className='ml-4'>Banana-Leaf</a>
+                       <img src={zeal} alt="" style={{width:'35px', height:'35px'}} />
+                       <a href="" className='ml-3' style={{marginLeft:'30px'}}>Banana-Leaf</a>
+
                     </div>
                     <div className="rightnavbar">
-                           <img src={zeal} alt="" style={{width:'35px', height:'35px'}} />
                     </div>
                 </div>
             </header>
