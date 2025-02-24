@@ -105,7 +105,7 @@ const Employeedashboard = () => {
         eventSource.close();
       }
       if (newMessage.Notification.Status == true) {
-        setNotifyData(newMessage.Notification.Notification)
+        setNotifyData(newMessage.Notification.Notification);
       }
 
       const audi = new Audio(audio);

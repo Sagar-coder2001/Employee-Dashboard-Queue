@@ -5,6 +5,7 @@ import Layout from '../../Cpmponents/Layout';
 import { useDispatch } from 'react-redux';
 import { changetoken } from '../../Features/Tokenslice';
 import userimg from '..//../assets/user.jpg'
+import { motion } from 'framer-motion';
 
 const LoginForm = () => {
   const [userdetails, setUserDetails] = useState({
@@ -16,6 +17,9 @@ const LoginForm = () => {
   const [showerr, setShowErr] = useState(false);
   const [filepath, setfilepath] = useState('');
   const [authuser , setauthuser] = useState(false)
+  const [isPromptVisible, setIsPromptVisible] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  // const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
 
   const onchangetext = (e) => {
@@ -69,10 +73,35 @@ const LoginForm = () => {
   }
 
   useEffect(() => {
-    setTimeout(() => {
-      setShowErr(false)
-    }, 5000);
-  },)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault(); // Prevent automatic prompt
+      setDeferredPrompt(e); // Save the event to trigger it later
+      setIsPromptVisible(true); // Show custom button
+    });
+    // setTimeout(() => {
+    //   setShowErr(false)
+    // }, 5000);
+  },[])
+
+
+  const handleAddToHomeScreen = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt(); // Show the A2HS prompt
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        setDeferredPrompt(null); // Clear the prompt event after use
+        setIsPromptVisible(false); // Hide the custom prompt button
+      });
+    }
+  };
+
+  const handleCancel = () => {
+    setIsPromptVisible(false)
+  };
 
   const togglePass = (id) => {
     const passwordInput = document.getElementById(id);
@@ -84,18 +113,7 @@ const LoginForm = () => {
         <div className="login-container">
           
               <div className="card-container">
-              {
-            showerr ? (
-              <div className='showerr'>
-                <div>
-                  <strong className='text-danger fs-2'>Error! </strong><span style={{ fontSize: '18px' }}>Invalid Username and Password</span>
-                  <i class="fa-solid fa-xmark"onClick={() => setShowErr(false)} style={{marginLeft:'15px', fontSize:'25px', color:"red"}}></i> 
-                </div>
-              </div>
-            )
-              :
-              ''
-          }
+            
                 <form>
                   <div style={{textAlign:'center'}}>
                   <img src={userimg} alt="" />
@@ -104,11 +122,13 @@ const LoginForm = () => {
                   <div className="mb-3">
                     <label htmlFor="username" className="form-label"> <strong>Username</strong></label>
                     <input type="email" className="form-control" value={userdetails.username} onChange={onchangetext} id="username" name='username' />
+                  <span className='text-danger'>{showerr ?  'Username is required' : ''}</span>
                   </div>
                   <div className="mb-3" style={{position:'relative'}}>
                     <label htmlFor="password" className="form-label"><strong>Password</strong></label>
                     <input type="password" className="form-control" value={userdetails.password} onChange={onchangetext} name='password' id="password" />
                     <i className="fa-solid fa-eye" style={{position: 'absolute', top:'40px', right:'10px', color:'black'}} onClick={() => {togglePass('password')}}></i>
+                    <span className='text-danger'>{showerr ?  'Password is required' : ''}</span>
                   </div>
                   <div className="mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="exampleCheck1" />
@@ -120,6 +140,45 @@ const LoginForm = () => {
                 </form>
               </div>
         </div>
+
+        {isPromptVisible && (
+            <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{opacity : 1 }}     
+            transition={{ duration: 0.8 }}
+            style={{
+              width:'96%',
+              maxWidth:'500px',
+              textAlign:'center',
+              margin:'0px auto',
+              position:'absolute',
+              top: '55px',
+              left:'50%',
+              zIndex:'1000',
+              transform:'translate(-50%,-50%)'
+            }}
+            className="alert alert-primary alert-dismissible fade show" role="alert">
+              <strong>Install These app for better Experince</strong>
+            <div className='mt-2'>
+              <button
+                id="add-to-home-screen-btn"
+                type="button"
+                className="btn btn-success me-2"
+                onClick={handleAddToHomeScreen}
+              >
+                Add to Home Screen
+              </button>
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+            </div>
+          </motion.div>
+          )}
+
       </Layout>
     </div>
   )

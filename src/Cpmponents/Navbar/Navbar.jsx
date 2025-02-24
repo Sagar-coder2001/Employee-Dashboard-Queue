@@ -12,10 +12,13 @@ const Navbar = () => {
                 <div className="navbar">
                     <div className="leftnavbar">
                        <img src={zeal} alt="" style={{width:'35px', height:'35px'}} />
-                       <a href="" className='ml-3' style={{marginLeft:'30px'}}>Banana-Leaf</a>
 
                     </div>
                     <div className="rightnavbar">
+                       <a href="" className='ml-3' style={{marginLeft:'30px'}}>Banana-Leaf</a>
+                    </div>
+                    <div>
+                        
                     </div>
                 </div>
             </header>
