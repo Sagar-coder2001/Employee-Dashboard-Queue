@@ -1,5 +1,4 @@
-let CACHE_NAME = 'codePwa-v2';
-
+let CACHE_NAME = 'codePwa';
 let urlCache = [
    '/',
     '/@react-refresh',

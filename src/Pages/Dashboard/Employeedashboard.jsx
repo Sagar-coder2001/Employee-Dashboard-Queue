@@ -44,7 +44,7 @@ const Employeedashboard = () => {
         formdata.append('token', token);
         formdata.append('username', user);
 
-        const response = await fetch('http://192.168.1.25/Queue/Hotel_Admin/table.php?for=get', {
+        const response = await fetch('http://192.168.1.10/Queue/Hotel_Admin/table.php?for=get', {
           method: 'POST',
           body: formdata,
         });
@@ -94,7 +94,7 @@ const Employeedashboard = () => {
 
   const fetchQueue = () => {
     stopfunction();
-    const eventSource = new EventSource(`http://192.168.1.25/Queue/Hotel_Employee/fetchQueue.php?username=${user}&token=${token}&table_size=${tableSize}&table_type=${roomtype}`);
+    const eventSource = new EventSource(`http://192.168.1.10/Queue/Hotel_Employee/fetchQueue.php?username=${user}&token=${token}&table_size=${tableSize}&table_type=${roomtype}`);
 
     setEventSource(eventSource);
     eventSource.onmessage = (event) => {
@@ -166,7 +166,7 @@ const Employeedashboard = () => {
         formdata.append('contact', selectedUser.waitingContact);
         formdata.append('timeChange', updatetime);
 
-        const response = await fetch('http://192.168.1.25/Queue/Hotel_Employee/queueManage.php', {
+        const response = await fetch('http://192.168.1.10/Queue/Hotel_Employee/queueManage.php', {
           method: 'POST',
           body: formdata,
         });
@@ -197,7 +197,7 @@ const Employeedashboard = () => {
         formdata.append('username', user);
         formdata.append('contact', row);
 
-        const response = await fetch(`http://192.168.1.25/Queue/Hotel_Employee/queueManage.php?waiting=${abc}`, {
+        const response = await fetch(`http://192.168.1.10/Queue/Hotel_Employee/queueManage.php?waiting=${abc}`, {
           method: 'POST',
           body: formdata,
         });
@@ -225,7 +225,7 @@ const Employeedashboard = () => {
         formdata.append('contact', selectedUser.waitingContact);
         formdata.append('queueUpdate', managequeue)
 
-        const response = await fetch(`http://192.168.1.25/Queue/Hotel_Employee/queueManage.php`, {
+        const response = await fetch(`http://192.168.1.10/Queue/Hotel_Employee/queueManage.php`, {
           method: 'POST',
           body: formdata,
         });
@@ -244,7 +244,6 @@ const Employeedashboard = () => {
     }
     fetchData();
   }
-
 
   // Get current page data
   const indexOfLastItem = currentPage * itemsPerPage;

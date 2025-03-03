@@ -45,7 +45,7 @@ const LoginForm = () => {
       formdata.append('username', userdetails.username);
       formdata.append('password', userdetails.password);
 
-      const response = await fetch(`http://192.168.1.25/Queue/login.php?do=login&hotel_id=${filepath}`, {
+      const response = await fetch(`http://192.168.1.10/Queue/login.php?do=login&hotel_id=${filepath}`, {
         method: 'POST',
         body: formdata,
       });
@@ -111,7 +111,6 @@ const LoginForm = () => {
     <div>
       <Layout>
         <div className="login-container">
-          
               <div className="card-container">
             
                 <form>
@@ -146,6 +145,7 @@ const LoginForm = () => {
             initial={{ opacity: 0 }} 
             animate={{opacity : 1 }}     
             transition={{ duration: 0.8 }}
+
             style={{
               width:'96%',
               maxWidth:'500px',
@@ -157,6 +157,7 @@ const LoginForm = () => {
               zIndex:'1000',
               transform:'translate(-50%,-50%)'
             }}
+
             className="alert alert-primary alert-dismissible fade show" role="alert">
               <strong>Install These app for better Experince</strong>
             <div className='mt-2'>
